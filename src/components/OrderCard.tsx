@@ -30,11 +30,11 @@ export default function OrderCard({ order, onAdvance, onTap, onDragStart }: Orde
   const urgencyBorder = isDone
     ? "border-border bg-muted/50 opacity-70"
     : isOverdue
-    ? "border-status-now bg-status-now-bg status-glow-now"
+    ? "border-status-now bg-card status-glow-now"
     : urgency === "urgent"
-    ? "border-status-now/40 bg-status-now-bg"
+    ? "border-status-now/30 bg-card"
     : urgency === "soon"
-    ? "border-status-next/40 bg-status-next-bg"
+    ? "border-status-next/30 bg-card"
     : "border-border bg-card";
 
   return (
