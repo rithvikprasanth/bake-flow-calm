@@ -2,95 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Space+Mono:wght@400;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Warm parchment background */
+    --background: 36 33% 97%;
+    --foreground: 20 10% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Cards - slightly warmer white */
+    --card: 36 30% 99%;
+    --card-foreground: 20 10% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 36 30% 99%;
+    --popover-foreground: 20 10% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Cast iron / deep charcoal */
+    --primary: 20 10% 15%;
+    --primary-foreground: 36 33% 97%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Warm stone */
+    --secondary: 30 15% 90%;
+    --secondary-foreground: 20 10% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted - Flour dust */
+    --muted: 30 12% 92%;
+    --muted-foreground: 20 8% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Terracotta / copper */
+    --accent: 16 65% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status: NOW - Urgent coral red */
+    --status-now: 4 72% 56%;
+    --status-now-foreground: 0 0% 100%;
+    --status-now-bg: 4 72% 96%;
+
+    /* Status: NEXT - Warm amber */
+    --status-next: 38 92% 50%;
+    --status-next-foreground: 30 50% 15%;
+    --status-next-bg: 38 92% 95%;
+
+    /* Status: LATER - Sage green */
+    --status-later: 145 30% 45%;
+    --status-later-foreground: 0 0% 100%;
+    --status-later-bg: 145 30% 95%;
+
+    /* Status: DONE - Muted */
+    --status-done: 20 5% 70%;
+    --status-done-foreground: 0 0% 100%;
+    --status-done-bg: 20 5% 95%;
+
+    /* Payment states */
+    --payment-paid: 145 50% 42%;
+    --payment-pending: 38 90% 50%;
+    --payment-unpaid: 4 72% 56%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 30 15% 88%;
+    --input: 30 15% 88%;
+    --ring: 16 65% 55%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 30 15% 95%;
+    --sidebar-foreground: 20 10% 25%;
+    --sidebar-primary: 20 10% 15%;
+    --sidebar-primary-foreground: 36 33% 97%;
+    --sidebar-accent: 30 15% 90%;
+    --sidebar-accent-foreground: 20 10% 25%;
+    --sidebar-border: 30 15% 88%;
+    --sidebar-ring: 16 65% 55%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
+    --background: 20 10% 8%;
+    --foreground: 36 20% 90%;
+    --card: 20 10% 12%;
+    --card-foreground: 36 20% 90%;
+    --popover: 20 10% 12%;
+    --popover-foreground: 36 20% 90%;
+    --primary: 36 20% 90%;
+    --primary-foreground: 20 10% 8%;
+    --secondary: 20 8% 18%;
+    --secondary-foreground: 36 20% 90%;
+    --muted: 20 8% 18%;
+    --muted-foreground: 30 10% 55%;
+    --accent: 16 65% 55%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 20 8% 22%;
+    --input: 20 8% 22%;
+    --ring: 16 65% 55%;
+    --sidebar-background: 20 10% 10%;
+    --sidebar-foreground: 36 20% 85%;
+    --sidebar-primary: 36 20% 90%;
+    --sidebar-primary-foreground: 20 10% 8%;
+    --sidebar-accent: 20 8% 18%;
+    --sidebar-accent-foreground: 36 20% 85%;
+    --sidebar-border: 20 8% 22%;
+    --sidebar-ring: 16 65% 55%;
   }
 }
 
@@ -101,5 +115,39 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .tap-target {
+    @apply min-h-[56px] min-w-[56px];
+  }
+
+  .ticket-shadow {
+    box-shadow: 0 2px 8px -2px hsl(20 10% 15% / 0.08), 0 4px 16px -4px hsl(20 10% 15% / 0.06);
+  }
+
+  .ticket-shadow-hover {
+    box-shadow: 0 4px 12px -2px hsl(20 10% 15% / 0.12), 0 8px 24px -4px hsl(20 10% 15% / 0.08);
+  }
+
+  .status-glow-now {
+    box-shadow: 0 0 0 3px hsl(4 72% 56% / 0.15);
+  }
+
+  .status-glow-next {
+    box-shadow: 0 0 0 3px hsl(38 92% 50% / 0.15);
+  }
+
+  .status-glow-later {
+    box-shadow: 0 0 0 3px hsl(145 30% 45% / 0.15);
   }
 }
