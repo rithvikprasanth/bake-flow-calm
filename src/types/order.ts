@@ -8,7 +8,7 @@ export type OrderStatus =
 
 export type PaymentStatus = "unpaid" | "pending" | "paid";
 
-export type Lane = "now" | "next" | "later" | "done";
+export type StatusGroup = "orders_in" | "baking" | "delivery" | "done";
 
 export interface Order {
   id: string;
@@ -49,19 +49,41 @@ export function getNextStatus(current: OrderStatus): OrderStatus | null {
   return STATUS_FLOW[idx + 1];
 }
 
-export function getOrderLane(order: Order): Lane {
-  if (order.status === "delivered") return "done";
-  
-  const now = new Date();
-  const hoursUntilDeadline = (order.deadline.getTime() - now.getTime()) / (1000 * 60 * 60);
-  
-  if (hoursUntilDeadline <= 4 || order.status === "baking" || order.status === "ready" || order.status === "out_for_delivery") {
-    return "now";
+// Map status groups to columns
+export const STATUS_GROUP_CONFIG: Record<StatusGroup, {
+  label: string;
+  statuses: OrderStatus[];
+  defaultStatus: OrderStatus;
+}> = {
+  orders_in: {
+    label: "ORDERS IN",
+    statuses: ["inquiry", "confirmed"],
+    defaultStatus: "inquiry",
+  },
+  baking: {
+    label: "BAKING",
+    statuses: ["baking"],
+    defaultStatus: "baking",
+  },
+  delivery: {
+    label: "DELIVERY",
+    statuses: ["ready", "out_for_delivery"],
+    defaultStatus: "ready",
+  },
+  done: {
+    label: "DONE",
+    statuses: ["delivered"],
+    defaultStatus: "delivered",
+  },
+};
+
+export const STATUS_GROUPS: StatusGroup[] = ["orders_in", "baking", "delivery", "done"];
+
+export function getStatusGroup(status: OrderStatus): StatusGroup {
+  for (const [group, config] of Object.entries(STATUS_GROUP_CONFIG)) {
+    if (config.statuses.includes(status)) return group as StatusGroup;
   }
-  if (hoursUntilDeadline <= 24) {
-    return "next";
-  }
-  return "later";
+  return "orders_in";
 }
 
 export function getDeadlineLabel(deadline: Date): string {
@@ -75,4 +97,12 @@ export function getDeadlineLabel(deadline: Date): string {
   if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
   return `${days}d`;
+}
+
+export function getUrgencyLevel(deadline: Date): "urgent" | "soon" | "normal" {
+  const now = new Date();
+  const hours = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60);
+  if (hours <= 4) return "urgent";
+  if (hours <= 24) return "soon";
+  return "normal";
 }

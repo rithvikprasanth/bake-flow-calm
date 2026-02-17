@@ -1,22 +1,45 @@
-import { useState, useMemo } from "react";
-import { Order, Lane, getOrderLane, getNextStatus, PaymentStatus } from "@/types/order";
+import { useState, useMemo, useEffect } from "react";
+import {
+  Order,
+  StatusGroup,
+  STATUS_GROUPS,
+  STATUS_GROUP_CONFIG,
+  getStatusGroup,
+  getNextStatus,
+  PaymentStatus,
+} from "@/types/order";
 import { mockOrders } from "@/data/mockOrders";
 import KanbanColumn from "./KanbanColumn";
 import OrderDetail from "./OrderDetail";
 import AddOrderSheet from "./AddOrderSheet";
-import { Plus, ChefHat, IndianRupee } from "lucide-react";
-
-const lanes: Lane[] = ["now", "next", "later", "done"];
+import { Plus, ChefHat, IndianRupee, Moon, Sun } from "lucide-react";
 
 export default function KitchenBoard() {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showAddSheet, setShowAddSheet] = useState(false);
+  const [draggedOrderId, setDraggedOrderId] = useState<string | null>(null);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return document.documentElement.classList.contains("dark") ||
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
 
-  const laneOrders = useMemo(() => {
-    const grouped: Record<Lane, Order[]> = { now: [], next: [], later: [], done: [] };
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+
+  const groupedOrders = useMemo(() => {
+    const grouped: Record<StatusGroup, Order[]> = {
+      orders_in: [],
+      baking: [],
+      delivery: [],
+      done: [],
+    };
     orders.forEach((o) => {
-      grouped[getOrderLane(o)].push(o);
+      grouped[getStatusGroup(o.status)].push(o);
     });
     return grouped;
   }, [orders]);
@@ -29,7 +52,6 @@ export default function KitchenBoard() {
         return next ? { ...o, status: next } : o;
       })
     );
-    // Update selected order if open
     setSelectedOrder((prev) => {
       if (!prev || prev.id !== orderId) return prev;
       const next = getNextStatus(prev.status);
@@ -55,7 +77,24 @@ export default function KitchenBoard() {
     setOrders((prev) => [newOrder, ...prev]);
   };
 
-  // Summary stats
+  const handleDragStart = (_e: React.DragEvent, orderId: string) => {
+    setDraggedOrderId(orderId);
+  };
+
+  const handleDrop = (targetGroup: StatusGroup) => {
+    if (!draggedOrderId) return;
+    const config = STATUS_GROUP_CONFIG[targetGroup];
+    setOrders((prev) =>
+      prev.map((o) => {
+        if (o.id !== draggedOrderId) return o;
+        // If already in this group, don't change
+        if (config.statuses.includes(o.status)) return o;
+        return { ...o, status: config.defaultStatus };
+      })
+    );
+    setDraggedOrderId(null);
+  };
+
   const totalPending = orders
     .filter((o) => o.status !== "delivered" && o.paymentStatus !== "paid")
     .reduce((sum, o) => sum + o.amount, 0);
@@ -78,26 +117,39 @@ export default function KitchenBoard() {
             </div>
           </div>
 
-          <button
-            className="tap-target flex items-center gap-2 px-5 py-3 rounded-xl bg-accent text-accent-foreground font-bold text-sm transition-all active:scale-95"
-            onClick={() => setShowAddSheet(true)}
-          >
-            <Plus className="w-5 h-5" />
-            <span className="hidden sm:inline">New Order</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Dark mode toggle */}
+            <button
+              className="tap-target p-3 rounded-xl bg-secondary text-secondary-foreground transition-all active:scale-95"
+              onClick={() => setIsDark((v) => !v)}
+              aria-label="Toggle dark mode"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+
+            <button
+              className="tap-target flex items-center gap-2 px-5 py-3 rounded-xl bg-accent text-accent-foreground font-bold text-sm transition-all active:scale-95"
+              onClick={() => setShowAddSheet(true)}
+            >
+              <Plus className="w-5 h-5" />
+              <span className="hidden sm:inline">New Order</span>
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Kanban Board */}
       <main className="flex-1 overflow-x-auto">
-        <div className="flex gap-4 p-4 max-w-7xl mx-auto min-h-[calc(100vh-80px)]">
-          {lanes.map((lane) => (
+        <div className="flex gap-2 p-4 max-w-7xl mx-auto min-h-[calc(100vh-80px)]">
+          {STATUS_GROUPS.map((group) => (
             <KanbanColumn
-              key={lane}
-              lane={lane}
-              orders={laneOrders[lane]}
+              key={group}
+              group={group}
+              orders={groupedOrders[group]}
               onAdvance={handleAdvance}
               onTapOrder={setSelectedOrder}
+              onDragStart={handleDragStart}
+              onDrop={handleDrop}
             />
           ))}
         </div>
